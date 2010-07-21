@@ -6,7 +6,7 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 import eu.tanov.sumc.crawler.util.WebElementHelper;
 
@@ -26,9 +26,9 @@ public class Provider {
 	 */
 	private static final String URL_MAIN = "http://gps.skgt-bg.com/";
 
-	//FIXME here use HtmlUnitDriver!
-	private final WebDriver webDriver = new ChromeDriver();
-
+	//use ChromeDriver(true) while developing in order to see what happens
+	private final WebDriver webDriver = new HtmlUnitDriver(true);
+	
 	private List<String> getList(String name, boolean skipFirst) {
 		final WebElement combo = webDriver.findElement(By.xpath(String.format(FORMAT_XPATH_BY_NAME, name)));
 		if (combo == null) {
@@ -70,13 +70,26 @@ public class Provider {
 	private void setLine(String vehicleType, String line) {
 		setVehicleType(vehicleType);
 		
+		//FIXME use waitUntil():
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		final WebElement lines = webDriver.findElement(By.xpath(String.format(FORMAT_XPATH_BY_NAME, NAME_COMBO_LINES)));
 		WebElementHelper.setValue(lines , line);
 	}
 
 	private void setDirection(String vehicleType, String line, boolean firstDirection) {
 		setLine(vehicleType, line);
-		
+		//FIXME use waitUntil():
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		final List<WebElement> radioButtons = webDriver.findElements(By.xpath(String.format(FORMAT_XPATH_BY_NAME, NAME_RADIO_DIRECTION)));
 		if (radioButtons.size()!=2) {
 			throw new IllegalStateException("Expected 2 directions, not: "+WebElementHelper.webElementsToString(radioButtons));
@@ -90,7 +103,13 @@ public class Provider {
 
 	public List<String> getStops(String vehicleType, String line, boolean firstDirection) {
 		setDirection(vehicleType, line, firstDirection);
-
+		//FIXME use waitUntil():
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return getList(NAME_COMBO_STOPS, true);
 	}
 	
