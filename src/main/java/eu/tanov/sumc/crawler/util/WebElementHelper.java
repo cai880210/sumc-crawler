@@ -12,6 +12,7 @@ public class WebElementHelper {
 	private static final String TAG_INPUT = "input";
 	private static final String TAG_SELECT = "select";
 	private static final List<String> VALUE_ELEMENTS = Arrays.asList(TAG_INPUT, TAG_SELECT);
+	public static final int NOT_FOUND = -1;
 
 	//helper, without instance
 	private WebElementHelper() {}
@@ -56,17 +57,24 @@ public class WebElementHelper {
 		}
 	}
 
+	public static int indexOf(List<WebElement> elements, String value) {
+		int i = 0;
+		for (WebElement option : elements) {
+			if (value.equals(WebElementHelper.getTextValue(option))) {
+				return i;
+			}
+			i++;
+		}
+		return NOT_FOUND;
+	}
 	private static void setValueSelect(WebElement select, String value) {
 		final List<WebElement> availableOptions = getSelectOptions(select); 
 
-		for (WebElement option : availableOptions) {
-			if (value.equals(WebElementHelper.getTextValue(option))) {
-				option.setSelected();
-				return;
-			}
+		int index = indexOf(availableOptions, value);
+		if (index == NOT_FOUND) {
+			throw new IllegalArgumentException(value+" not found in "+WebElementHelper.webElementsToString(availableOptions));
 		}
-		
-		throw new IllegalArgumentException(value+" not found in "+WebElementHelper.webElementsToString(availableOptions));
+		availableOptions.get(index).setSelected();
 	}
 
 	public static String toString(WebElement webElement) {
