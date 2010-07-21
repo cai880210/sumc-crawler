@@ -11,7 +11,7 @@ public class Main {
 	public static void main(String[] args) {
 		final Provider provider = new Provider();
 
-		final List<String> vehicleTypes = provider.getVehicleTypes();
+//		final List<String> vehicleTypes = provider.getVehicleTypes();
 		List<String> stops = provider.getStops("Автобусен", "2", false);
 //		provider.close();
 		

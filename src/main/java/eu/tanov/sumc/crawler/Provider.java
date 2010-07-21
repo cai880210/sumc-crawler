@@ -67,6 +67,7 @@ public class Provider {
 	}
 
 	private void setVehicleType(String vehicleType) {
+		webDriver.get(URL_MAIN);
 		final WebElement vehicleTypes = webDriver.findElement(By.xpath(String.format(FORMAT_XPATH_BY_NAME, NAME_COMBO_VEHICLE_TYPES)));
 		WebElementHelper.setValue(vehicleTypes , vehicleType);
 	}
