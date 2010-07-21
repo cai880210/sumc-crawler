@@ -6,6 +6,7 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.WrapsDriver;
 
 public class WebElementHelper {
 	private static final String TAG_INPUT = "input";
@@ -36,7 +37,7 @@ public class WebElementHelper {
 		if ("".equals(result)) {
 			// get through java script, because getText() does not work
 			// correctly here
-			result = (String) ((JavascriptExecutor) element).executeScript(
+			result = (String) toJavascriptExecutor(element).executeScript(
 					"return arguments[0].textContent", element);
 			// &nbsp; is converted to A0, fixing with this:
 			return result.replaceAll("\\xA0", " ");
@@ -83,7 +84,7 @@ public class WebElementHelper {
 	}
 
 	public static String getInnerHtml(final WebElement element) {
-		return (String) ((JavascriptExecutor) element).executeScript(
+		return (String) toJavascriptExecutor(element).executeScript(
 				"return arguments[0].innerHTML", element);
 	}
 
@@ -102,5 +103,13 @@ public class WebElementHelper {
 		return result.toString();
 	}
 
+	private static JavascriptExecutor toJavascriptExecutor(Object element) {
+		if (element instanceof JavascriptExecutor) {
+			return (JavascriptExecutor) element;
+		} else if (element instanceof WrapsDriver) {
+			return toJavascriptExecutor(((WrapsDriver)element).getWrappedDriver());
+		}
+		throw new IllegalArgumentException("could not convert to javascript executor: "+element);
+	}
 }
 
