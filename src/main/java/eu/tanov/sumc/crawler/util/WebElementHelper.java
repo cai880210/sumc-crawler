@@ -3,7 +3,6 @@ package eu.tanov.sumc.crawler.util;
 import java.util.Arrays;
 import java.util.List;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsDriver;
@@ -17,18 +16,15 @@ public class WebElementHelper {
 	//helper, without instance
 	private WebElementHelper() {}
 
-	public static List<WebElement> getSelectOptions(WebElement select) {
-		return select.findElements(By.tagName("option")); 
-	}
 	
 	/**
-	 * Stupid way to get value or text of element? Because getText() does not
+	 * Stupid way to get text in element? Because getText() does not
 	 * return correct values in some cases
 	 * 
 	 * TODO find better solution
 	 * XXX how to check value of labeledInputs?
 	 */
-	public static String getTextValue(final WebElement element) {
+	public static String getText(final WebElement element) {
 		if (VALUE_ELEMENTS.contains(element.getTagName().toLowerCase())) {
 			return element.getValue();
 		}
@@ -47,34 +43,26 @@ public class WebElementHelper {
 		return result;
 	}
 	
-	public static void setValue(WebElement element, String value) {
+	public static void setText(WebElement element, String text) {
 		if (TAG_SELECT.equals(element.getTagName())) {
-			setValueSelect(element, value);
+			SelectWebElementHelper.setText(element, text);
+//TODO for other types
 //		} else if (TAG_INPUT.equals(element.getTagName())) {
 //			setValueInput();
 		} else {
-			throw new IllegalArgumentException("Unknown type of "+toString(element)+" with new value: "+value);
+			throw new IllegalArgumentException("Unknown type of "+toString(element)+" with new value: "+text);
 		}
 	}
 
 	public static int indexOf(List<WebElement> elements, String value) {
 		int i = 0;
 		for (WebElement option : elements) {
-			if (value.equals(WebElementHelper.getTextValue(option))) {
+			if (value.equals(getText(option))) {
 				return i;
 			}
 			i++;
 		}
 		return NOT_FOUND;
-	}
-	private static void setValueSelect(WebElement select, String value) {
-		final List<WebElement> availableOptions = getSelectOptions(select); 
-
-		int index = indexOf(availableOptions, value);
-		if (index == NOT_FOUND) {
-			throw new IllegalArgumentException(value+" not found in "+WebElementHelper.webElementsToString(availableOptions));
-		}
-		availableOptions.get(index).setSelected();
 	}
 
 	public static String toString(WebElement webElement) {
@@ -111,7 +99,7 @@ public class WebElementHelper {
 		return result.toString();
 	}
 
-	private static JavascriptExecutor toJavascriptExecutor(Object element) {
+	public static JavascriptExecutor toJavascriptExecutor(Object element) {
 		if (element instanceof JavascriptExecutor) {
 			return (JavascriptExecutor) element;
 		} else if (element instanceof WrapsDriver) {
@@ -119,5 +107,9 @@ public class WebElementHelper {
 		}
 		throw new IllegalArgumentException("could not convert to javascript executor: "+element);
 	}
+
+
+
+
 }
 

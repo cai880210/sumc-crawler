@@ -12,9 +12,10 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 import eu.tanov.sumc.crawler.data.BusStop;
+import eu.tanov.sumc.crawler.util.SelectWebElementHelper;
 import eu.tanov.sumc.crawler.util.WaitHelper;
-import eu.tanov.sumc.crawler.util.WaitHelper.Condition;
 import eu.tanov.sumc.crawler.util.WebElementHelper;
+import eu.tanov.sumc.crawler.util.WaitHelper.Condition;
 
 public class Provider {
 	private static final Logger log = Logger.getLogger(Provider.class.getName());
@@ -51,7 +52,7 @@ public class Provider {
 			throw new NullPointerException("Could not find listbox with name: "+name);
 		}
 		
-		final List<WebElement> options = WebElementHelper.getSelectOptions(combo);
+		final List<WebElement> options = SelectWebElementHelper.getOptions(combo);
 		
 		//-1 because of first/empty record
 		final List<String> result = new ArrayList<String>(options.size());
@@ -63,7 +64,7 @@ public class Provider {
 				continue;
 			}
 			
-			result.add(WebElementHelper.getTextValue(option));
+			result.add(WebElementHelper.getText(option));
 		}
 		return result;
 	}
@@ -97,7 +98,7 @@ public class Provider {
 
 					//one element - it is select
 					
-					return WebElementHelper.getSelectOptions(condition.get(0)).size()>1;
+					return SelectWebElementHelper.getOptions(condition.get(0)).size()>1;
 				} catch (StaleElementReferenceException e) {
 					//content is just refreshing by JS
 					return false;
@@ -109,14 +110,14 @@ public class Provider {
 	private void setVehicleType(String vehicleType) {
 		final WebElement vehicleTypes = webDriver.findElement(By.xpath(String.format(FORMAT_XPATH_BY_NAME, NAME_COMBO_VEHICLE_TYPES)));
 		//first hide previous value
-		WebElementHelper.getSelectOptions(vehicleTypes).get(0).setSelected();
+		SelectWebElementHelper.getOptions(vehicleTypes).get(0).setSelected();
 		//and wait for refresh
 		WaitHelper.waitForCondition(new Condition() {
 			public boolean completed() {
 				try {
 					final WebElement comboLines = webDriver.findElement(By.xpath(String.format(FORMAT_XPATH_BY_NAME, NAME_COMBO_LINES)));
 					//one element - treat as select and check his options count
-					return WebElementHelper.getSelectOptions(comboLines).size() < 2;
+					return SelectWebElementHelper.getOptions(comboLines).size() < 2;
 				} catch (StaleElementReferenceException e) {
 					//content is just refreshing by JS
 					return false;
@@ -126,7 +127,7 @@ public class Provider {
 
 		final WebElement refreshedVehicleTypes = webDriver.findElement(By.xpath(String.format(FORMAT_XPATH_BY_NAME, NAME_COMBO_VEHICLE_TYPES)));
 
-		WebElementHelper.setValue(refreshedVehicleTypes , vehicleType);
+		WebElementHelper.setText(refreshedVehicleTypes , vehicleType);
 		//wait new results
 		waitForAnswer(NAME_COMBO_LINES);
 	}
@@ -135,7 +136,7 @@ public class Provider {
 		setVehicleType(vehicleType);
 		
 		final WebElement lines = webDriver.findElement(By.xpath(String.format(FORMAT_XPATH_BY_NAME, NAME_COMBO_LINES)));
-		WebElementHelper.setValue(lines , line);
+		WebElementHelper.setText(lines , line);
 		
 		//wait new results
 		waitForAnswer(NAME_RADIO_DIRECTION);
@@ -165,7 +166,7 @@ public class Provider {
 			public boolean completed() {
 				try {
 					final WebElement stops = webDriver.findElement(By.xpath(String.format(FORMAT_XPATH_BY_NAME, NAME_COMBO_BUS_STOPS)));
-					final List<WebElement> selectOptions = WebElementHelper.getSelectOptions(stops);
+					final List<WebElement> selectOptions = SelectWebElementHelper.getOptions(stops);
 					return selectOptions.size()>1;
 				} catch (StaleElementReferenceException e) {
 					//content is just refreshing by JS
