@@ -12,8 +12,8 @@ import eu.tanov.sumc.crawler.data.VehicleType;
 public class Main {
 	private static final Logger log = Logger.getLogger(Main.class.getName());
 
-	private static final long DEFAULT_TIMEOUT_SLEEP = 10000;
-	private static final long DEFAULT_TIMEOUT_AFTER_ERROR = 200;
+	private static final long DEFAULT_TIMEOUT_SLEEP = 200;
+//	private static final long DEFAULT_TIMEOUT_AFTER_ERROR = 10000;
 
 	public Main() {
 	}
@@ -44,22 +44,22 @@ public class Main {
 		result.setName(vehicleTypeName);
 		final List<String> lines = provider.getLines(vehicleTypeName);
 		for (final String lineName : lines) {
-			boolean success = false;
-			while(!success) {
-				try {
+//			boolean success = false;
+//			while(!success) {
+//				try {
 					result.getLines().add(getLine(provider, vehicleTypeName, lineName));
-					success = true;
-				} catch (Throwable e) {
-					log.info("error, retring", e);
-					//try again
-					try {
-						Thread.sleep(DEFAULT_TIMEOUT_AFTER_ERROR);
-					} catch (InterruptedException e1) {
-						log.warn("while sleeping", e);
-					}
-				}
-				
-			}
+//					success = true;
+//				} catch (Throwable e) {
+//					log.info("error, retring", e);
+//					//try again
+//					try {
+//						Thread.sleep(DEFAULT_TIMEOUT_AFTER_ERROR);
+//					} catch (InterruptedException e1) {
+//						log.warn("while sleeping", e);
+//					}
+//				}
+//				
+//			}
 			//keep server load
 			try {
 				Thread.sleep(DEFAULT_TIMEOUT_SLEEP);
