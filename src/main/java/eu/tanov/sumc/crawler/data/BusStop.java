@@ -1,7 +1,7 @@
 package eu.tanov.sumc.crawler.data;
 
 public class BusStop {
-	private static final String FORMAT_BUS_STOP = "<busStop code=\"%s\" name=\"%s\" bgmapsLink=\"http://bgmaps.com/chooseobject.aspx?tplname=skgt&key=%s\" >";
+	private static final String FORMAT_BUS_STOP = "<busStop code=\"%s\" name=\"%s\" bgmapsLink=\"http://bgmaps.com/chooseobject.aspx?tplname=skgt&amp;key=%s\" />";
 	private String code;
 	private String name;
 	

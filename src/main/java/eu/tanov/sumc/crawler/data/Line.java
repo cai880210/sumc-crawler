@@ -13,7 +13,7 @@ public class Line {
 	
 	@Override
 	public String toString() {
-		return "<line name="+name+">"+
+		return "<line name=\""+name+"\">"+
 			"<direction1>"+CollectionsHelper.toStringNoSpaces(busStopsDirection1)+ "</direction1>"+
 			"<direction2>"+CollectionsHelper.toStringNoSpaces(busStopsDirection2)+ "</direction2>"+
 		"</line>";
