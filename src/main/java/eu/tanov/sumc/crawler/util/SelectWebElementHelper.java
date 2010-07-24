@@ -12,11 +12,6 @@ public class SelectWebElementHelper {
 	//utility class
 	private SelectWebElementHelper() {}
 	
-	public static WebElement getSelected(WebElement select) {
-		return null;
-	}
-	
-	
 	/**
 	 * @param element
 	 * @return selected option in select
