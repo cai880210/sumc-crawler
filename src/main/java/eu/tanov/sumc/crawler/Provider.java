@@ -6,7 +6,6 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
-import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
@@ -14,8 +13,8 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import eu.tanov.sumc.crawler.data.BusStop;
 import eu.tanov.sumc.crawler.util.SelectWebElementHelper;
 import eu.tanov.sumc.crawler.util.WaitHelper;
-import eu.tanov.sumc.crawler.util.WebElementHelper;
 import eu.tanov.sumc.crawler.util.WaitHelper.Condition;
+import eu.tanov.sumc.crawler.util.WebElementHelper;
 
 public class Provider {
 	private static final Logger log = Logger.getLogger(Provider.class.getName());
@@ -25,7 +24,7 @@ public class Provider {
 	private static final String NAME_RADIO_DIRECTION = "ctl00$ContentPlaceHolder1$rblRoute";
 	private static final String NAME_COMBO_BUS_STOPS = "ctl00$ContentPlaceHolder1$ddlStops";
 //	private static final String NAME_IMAGE_MAP = "ctl00$ContentPlaceHolder1$imgMap";
-
+	//FIXME use By.name() instead:
 	private static final String FORMAT_XPATH_BY_NAME = "//*[@name='%s']";
 //	private static final String FORMAT_XPATH_BY_FOR = "//*[@for='%s']";
 //	private static final String FORMAT_XPATH_BY_ID = "//*[@id='%s']";
@@ -80,100 +79,145 @@ public class Provider {
 		setVehicleType(vehicleType);
 		return getList(NAME_COMBO_LINES, true);
 	}
-
-	private void waitForAnswer(final String isChangedConditionName) {
+	/**
+	 * for select boxes (they are always visible)
+	 */
+//	private void waitForAnswer(final WebElement oldElement, final String elementName) {
+//		WaitHelper.waitForCondition(new Condition() {
+//			public boolean completed() {
+//				//check if there is new element
+//				final WebElement matched = webDriver.findElement(By.xpath(String.format(FORMAT_XPATH_BY_NAME, elementName)));
+//				return !oldElement.equals(matched);
+//			}
+//		}, DEFAULT_TIMEOUT);
+//	}
+	/**
+	 * for radio buttons (they are hidden if line is not selected)
+	 * using findElements() because findElement() throws if nothing found
+	 */
+	private void waitForAnswer(final List<WebElement> oldElements, final String elementName) {
 		WaitHelper.waitForCondition(new Condition() {
 			public boolean completed() {
 				try {
-					final List<WebElement> condition = webDriver.findElements(By.xpath(String.format(FORMAT_XPATH_BY_NAME, isChangedConditionName)));
+					//check if there is new element
+					final List<WebElement> matched = webDriver.findElements(By.xpath(String.format(FORMAT_XPATH_BY_NAME, elementName)));
 					
-					if (condition.size() == 0) {
-						//not found - wait...
-						return false;
-					}
-					if (condition.size()>1) {
-						//radio buttons... found
+					if (matched.size()>oldElements.size()) {
 						return true;
 					}
-
-					//one element - it is select
-					
-					return SelectWebElementHelper.getOptions(condition.get(0)).size()>1;
-				} catch (StaleElementReferenceException e) {
-					//content is just refreshing by JS
+					if (matched.size() == 0) {
+						return false;
+					}
+					return !oldElements.get(0).equals(matched.get(0));
+				} catch (Exception e) {
+					log.info("exception for "+elementName, e);
 					return false;
 				}
 			}
 		}, DEFAULT_TIMEOUT);
 	}
+//
+//	private void waitForAnswer(final String isChangedConditionName) {
+//		WaitHelper.waitForCondition(new Condition() {
+//			public boolean completed() {
+//				try {
+//					final List<WebElement> condition = webDriver.findElements(By.xpath(String.format(FORMAT_XPATH_BY_NAME, isChangedConditionName)));
+//					
+//					if (condition.size() == 0) {
+//						//not found - wait...
+//						return false;
+//					}
+//					if (condition.size()>1) {
+//						//radio buttons... found
+//						return true;
+//					}
+//
+//					//one element - it is select
+//					
+//					return SelectWebElementHelper.getOptions(condition.get(0)).size()>1;
+//				} catch (StaleElementReferenceException e) {
+//					//content is just refreshing by JS
+//					return false;
+//				}
+//			}
+//		}, DEFAULT_TIMEOUT);
+//	}
 
 	private void setVehicleType(String vehicleType) {
 		final WebElement vehicleTypes = webDriver.findElement(By.xpath(String.format(FORMAT_XPATH_BY_NAME, NAME_COMBO_VEHICLE_TYPES)));
-		//first hide previous value
-		SelectWebElementHelper.getOptions(vehicleTypes).get(0).setSelected();
-		//and wait for refresh
-		WaitHelper.waitForCondition(new Condition() {
-			public boolean completed() {
-				try {
-					final WebElement comboLines = webDriver.findElement(By.xpath(String.format(FORMAT_XPATH_BY_NAME, NAME_COMBO_LINES)));
-					//one element - treat as select and check his options count
-					return SelectWebElementHelper.getOptions(comboLines).size() < 2;
-				} catch (StaleElementReferenceException e) {
-					//content is just refreshing by JS
-					return false;
-				}
-			}
-		}, DEFAULT_TIMEOUT);
-
-		final WebElement refreshedVehicleTypes = webDriver.findElement(By.xpath(String.format(FORMAT_XPATH_BY_NAME, NAME_COMBO_VEHICLE_TYPES)));
-
-		WebElementHelper.setText(refreshedVehicleTypes , vehicleType);
+		//is need to change?
+		final WebElement selectedVehicleType = SelectWebElementHelper.getSelectedOption(vehicleTypes);
+//		if (selectedVehicleType == null) {
+//			throw new IllegalStateException("no selected vehicle type?!");
+//		}
+		if (selectedVehicleType!=null && vehicleType.equals(WebElementHelper.getText(selectedVehicleType))) {
+			//no need to change
+			return;
+		}
+		
+		final List<WebElement> lines = webDriver.findElements(By.xpath(String.format(FORMAT_XPATH_BY_NAME, NAME_COMBO_LINES)));
+		WebElementHelper.setText(vehicleTypes , vehicleType);
 		//wait new results
-		waitForAnswer(NAME_COMBO_LINES);
+		waitForAnswer(lines, NAME_COMBO_LINES);
 	}
 
 	private void setLine(String vehicleType, final String line) {
 		setVehicleType(vehicleType);
 		
 		final WebElement lines = webDriver.findElement(By.xpath(String.format(FORMAT_XPATH_BY_NAME, NAME_COMBO_LINES)));
-		WebElementHelper.setText(lines , line);
 		
+		//is need to change?
+		final WebElement selectedLine = SelectWebElementHelper.getSelectedOption(lines);
+//		if (selectedLine == null) {
+//			throw new IllegalStateException("no selected line?!");
+//		}
+		if (selectedLine!=null && line.equals(WebElementHelper.getText(selectedLine))) {
+			//no need to change
+			return;
+		}		
+		
+		final List<WebElement> directions = webDriver.findElements(By.xpath(String.format(FORMAT_XPATH_BY_NAME, NAME_RADIO_DIRECTION)));
+		WebElementHelper.setText(lines , line);
 		//wait new results
-		waitForAnswer(NAME_RADIO_DIRECTION);
+		waitForAnswer(directions, NAME_RADIO_DIRECTION);
 	}
 
 	private void setDirection(String vehicleType, String line, boolean firstDirection) {
 		setLine(vehicleType, line);
-
 		final List<WebElement> radioButtons = webDriver.findElements(By.xpath(String.format(FORMAT_XPATH_BY_NAME, NAME_RADIO_DIRECTION)));
+		
+		
+		
 		if (radioButtons.size()!=2) {
 			throw new IllegalStateException("Expected 2 directions, not: "+WebElementHelper.webElementsToString(radioButtons));
 		}
 		
-		//TODO add this to WebElementHelper - set value of radio button group (by index)
-		radioButtons.get(firstDirection?0:1).click();
-		//setSelected() does not work - site expects click...
-//		radioButtons.get(firstDirection?0:1).setSelected();//XXX or .click();
-
-		//wait new results
-		waitForAnswer(NAME_COMBO_BUS_STOPS);
+		if (!radioButtons.get(firstDirection?0:1).isSelected()) {
+			final List<WebElement> busStops = webDriver.findElements(By.xpath(String.format(FORMAT_XPATH_BY_NAME, NAME_COMBO_BUS_STOPS)));
+			//TODO add this to WebElementHelper - set value of radio button group (by index)
+			radioButtons.get(firstDirection?0:1).click();
+			//setSelected() does not work - site expects click...
+			
+			//wait new results
+			waitForAnswer(busStops, NAME_COMBO_BUS_STOPS);
+		}
 	}
 
 	public List<BusStop> getBusStops(String vehicleType, String line, boolean firstDirection) {
 		setDirection(vehicleType, line, firstDirection);
 		log.debug("vehicleType: " +vehicleType + ", line: " + line + ", firstDirection: "+firstDirection);
-		WaitHelper.waitForCondition(new Condition() {
-			public boolean completed() {
-				try {
-					final WebElement stops = webDriver.findElement(By.xpath(String.format(FORMAT_XPATH_BY_NAME, NAME_COMBO_BUS_STOPS)));
-					final List<WebElement> selectOptions = SelectWebElementHelper.getOptions(stops);
-					return selectOptions.size()>1;
-				} catch (StaleElementReferenceException e) {
-					//content is just refreshing by JS
-					return false;
-				}
-			}
-		}, DEFAULT_TIMEOUT);
+//		WaitHelper.waitForCondition(new Condition() {
+//			public boolean completed() {
+//				try {
+//					final WebElement stops = webDriver.findElement(By.xpath(String.format(FORMAT_XPATH_BY_NAME, NAME_COMBO_BUS_STOPS)));
+//					final List<WebElement> selectOptions = SelectWebElementHelper.getOptions(stops);
+//					return selectOptions.size()>1;
+//				} catch (StaleElementReferenceException e) {
+//					//content is just refreshing by JS
+//					return false;
+//				}
+//			}
+//		}, DEFAULT_TIMEOUT);
 		
 		return parseBusStopsNames(getList(NAME_COMBO_BUS_STOPS, true));
 	}
