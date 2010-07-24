@@ -10,7 +10,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
-import eu.tanov.sumc.crawler.data.BusStop;
+import eu.tanov.sumc.crawler.model.BusStop;
 import eu.tanov.sumc.crawler.util.SelectWebElementHelper;
 import eu.tanov.sumc.crawler.util.WaitHelper;
 import eu.tanov.sumc.crawler.util.WaitHelper.Condition;

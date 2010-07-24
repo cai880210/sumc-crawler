@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import eu.tanov.sumc.crawler.data.Line;
-import eu.tanov.sumc.crawler.data.SumcConfiguration;
-import eu.tanov.sumc.crawler.data.VehicleType;
+import eu.tanov.sumc.crawler.model.Line;
+import eu.tanov.sumc.crawler.model.SumcConfiguration;
+import eu.tanov.sumc.crawler.model.VehicleType;
 
 
 public class Main {
