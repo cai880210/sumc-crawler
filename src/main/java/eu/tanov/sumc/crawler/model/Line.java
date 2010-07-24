@@ -13,10 +13,12 @@ public class Line {
 	
 	@Override
 	public String toString() {
-		return "<line name=\""+name+"\">"+
-			"<direction1>"+CollectionsHelper.toStringNoSpaces(busStopsDirection1)+ "</direction1>"+
-			"<direction2>"+CollectionsHelper.toStringNoSpaces(busStopsDirection2)+ "</direction2>"+
-		"</line>";
+		return "\n\t\t<line name=\""+name+"\">"+
+			"\n\t\t\t<direction1>"+CollectionsHelper.toStringNoSpaces(busStopsDirection1)+
+			"\n\t\t\t</direction1>"+
+			"\n\t\t\t<direction2>"+CollectionsHelper.toStringNoSpaces(busStopsDirection2)+
+			"\n\t\t\t</direction2>"+
+		"\n\t\t</line>";
 	}
 
 	public String getName() {

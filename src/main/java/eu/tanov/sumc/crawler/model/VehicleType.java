@@ -12,7 +12,8 @@ public class VehicleType {
 	
 	@Override
 	public String toString() {
-		return "<vehicleType name=\""+name+"\">"+CollectionsHelper.toStringNoSpaces(lines)+"</vehicleType>";
+		return "\n\t<vehicleType name=\""+name+"\">"+CollectionsHelper.toStringNoSpaces(lines)+
+				"\n\t</vehicleType>";
 	}
 
 

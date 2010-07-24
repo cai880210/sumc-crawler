@@ -12,7 +12,8 @@ public class SumcConfiguration {
 
 	@Override
 	public String toString() {
-		return "<sumcConfiguration created=\""+dateCreated.getTime()+"\">"+CollectionsHelper.toStringNoSpaces(vehicleTypes)+"</sumcConfiguration>";
+		return "<sumcConfiguration created=\""+dateCreated.getTime()+"\">"+CollectionsHelper.toStringNoSpaces(vehicleTypes)+
+				"\n</sumcConfiguration>";
 	}
 
 	public List<VehicleType> getVehicleTypes() {
