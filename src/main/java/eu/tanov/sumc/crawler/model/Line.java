@@ -6,6 +6,7 @@ import java.util.List;
 import eu.tanov.sumc.crawler.util.CollectionsHelper;
 
 public class Line {
+	//TODO List with directions (not 1, 2, etc):
 	private final List<BusStop> direction1 = new LinkedList<BusStop>();
 	private final List<BusStop> direction2 = new LinkedList<BusStop>();
 	
