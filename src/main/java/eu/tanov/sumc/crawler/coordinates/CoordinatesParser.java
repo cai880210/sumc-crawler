@@ -29,7 +29,7 @@ public class CoordinatesParser extends BaseSaxParser<List<BusStop>> {
 			final String label = atts.getValue(ATTRIBUTE_NAME_LABEL);
 
 			final BusStop busStop = new BusStop();
-			busStop.setCode(code);
+			busStop.setCode(Integer.parseInt(code));
 			busStop.setLabel(label);
 			busStop.setLat(Double.valueOf(lat));
 			busStop.setLon(Double.valueOf(lon));

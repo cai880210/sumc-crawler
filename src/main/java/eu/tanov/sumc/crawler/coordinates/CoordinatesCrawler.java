@@ -51,7 +51,7 @@ public class CoordinatesCrawler implements Runnable {
 		if (!checkFiles()) {
 			return;
 		}
-		final Map<String, BusStop> codeToBusStop = createCodeToBusStopMap();
+		final Map<Integer, BusStop> codeToBusStop = createCodeToBusStopMap();
 		if (codeToBusStop == null) {
 			return;
 		}
@@ -108,11 +108,10 @@ public class CoordinatesCrawler implements Runnable {
 		return String.format(FORMAT_XML_DATE, timeAsString, configuration.getDateCreated().getTime());
 	}
 
-	private Set<BusStop> getUsedBusStops(SumcConfiguration configuration, Map<String, BusStop> codeToBusStop) {
+	private Set<BusStop> getUsedBusStops(SumcConfiguration configuration, Map<Integer, BusStop> codeToBusStop) {
 		final Set<BusStop> result = new TreeSet<BusStop>(new Comparator<BusStop>() {
 			public int compare(BusStop arg0, BusStop arg1) {
-				//XXX convert to integer:
-				return arg0.getCode().compareTo(arg1.getCode());
+				return arg1.getCode() - arg0.getCode();
 			}
 		});
 
@@ -140,7 +139,7 @@ public class CoordinatesCrawler implements Runnable {
 	/**
 	 * @return null if error else Map BusStopCode > BusStop 
 	 */
-	private Map<String, BusStop> createCodeToBusStopMap() {
+	private Map<Integer, BusStop> createCodeToBusStopMap() {
 //parse oldCoordinates
 		final List<BusStop> oldCoordinates;
 		try {
@@ -151,7 +150,7 @@ public class CoordinatesCrawler implements Runnable {
 		}
 
 //create map
-		final Map<String, BusStop> result = new HashMap<String, BusStop>(oldCoordinates.size());
+		final Map<Integer, BusStop> result = new HashMap<Integer, BusStop>(oldCoordinates.size());
 		for (BusStop busStop : oldCoordinates) {
 			result.put(busStop.getCode(), busStop);
 		}

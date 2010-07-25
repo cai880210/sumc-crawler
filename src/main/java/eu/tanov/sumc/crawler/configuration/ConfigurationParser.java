@@ -96,7 +96,7 @@ public class ConfigurationParser extends BaseSaxParser<SumcConfiguration> {
 //		final String bgmapsLink = atts.getValue(ATTRIBUTE_NAME_BUS_STOP__BGMAPS_LINK);
 
 		final BusStop busStop = new BusStop();
-		busStop.setCode(code);
+		busStop.setCode(Integer.parseInt(code));
 		busStop.setLabel(label);
 		//set bgmapsLink
 		

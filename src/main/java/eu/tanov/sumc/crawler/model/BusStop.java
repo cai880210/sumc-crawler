@@ -8,7 +8,7 @@ public class BusStop {
 	
 	private static final char DECIMAL_POINT = '.';
 
-	private String code;
+	private int code;
 	private String label;
 	private Double lat;
 	private Double lon;
@@ -24,11 +24,11 @@ public class BusStop {
 		
 	}
 
-	public String getCode() {
+	public int getCode() {
 		return code;
 	}
 
-	public void setCode(String code) {
+	public void setCode(int code) {
 		this.code = code;
 	}
 
@@ -65,14 +65,14 @@ public class BusStop {
 	
 	@Override
 	public int hashCode() {
-		return code.hashCode();
+		return code;
 	}
 	
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof BusStop) {
 			final BusStop otherBusStop = (BusStop) obj;
-			return otherBusStop.equals(this);
+			return otherBusStop.getCode()== this.getCode();
 		}
 		return false;
 	}

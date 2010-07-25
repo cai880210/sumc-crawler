@@ -179,7 +179,7 @@ public class ConfigurationProvider {
 		final String[] split = busStopLabel.split(BUS_STOP_CODE_SUFFIX_REGEX, 2);
 
 		result.setLabel(split[1].trim());
-		result.setCode(split[0].substring(1));
+		result.setCode(Integer.parseInt(split[0].substring(1)));
 
 		return result;
 	}
