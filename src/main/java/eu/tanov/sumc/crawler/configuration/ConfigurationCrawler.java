@@ -15,6 +15,8 @@ import eu.tanov.sumc.crawler.model.VehicleType;
 public class ConfigurationCrawler implements Runnable {
 	private static final Logger log = Logger.getLogger(ConfigurationCrawler.class.getName());
 
+	private static final String HEADER_XML = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>";
+
 	private final String outputFilename;
 	private final ConfigurationProvider provider;
 
@@ -62,6 +64,7 @@ public class ConfigurationCrawler implements Runnable {
 	private void writeToFile(SumcConfiguration result) throws IOException {
 		final FileWriter outFile = new FileWriter(outputFilename);
 		final PrintWriter out = new PrintWriter(outFile);
+		out.println(HEADER_XML);
 		//allow result to be null
 		out.println(String.valueOf(result));
 		out.close();
