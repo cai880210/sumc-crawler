@@ -8,7 +8,7 @@ import eu.tanov.sumc.crawler.util.CollectionsHelper;
 
 public class SumcConfiguration {
 	private final List<VehicleType> vehicleTypes = new LinkedList<VehicleType>();
-	private Date dateCreated = new Date();
+	private Date dateCreated;
 
 	@Override
 	public String toString() {

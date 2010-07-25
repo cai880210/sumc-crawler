@@ -3,6 +3,7 @@ package eu.tanov.sumc.crawler.configuration;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -75,6 +76,7 @@ public class ConfigurationCrawler implements Runnable {
 			result.getVehicleTypes().add(getVehicleType(provider, vehicleTypeLabel));
 		}
 
+		result.setDateCreated(new Date());
 		return result;
 	}
 
