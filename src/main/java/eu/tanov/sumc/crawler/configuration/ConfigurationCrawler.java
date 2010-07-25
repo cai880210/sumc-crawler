@@ -1,6 +1,5 @@
 package eu.tanov.sumc.crawler.configuration;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
@@ -22,6 +21,8 @@ public class ConfigurationCrawler implements Runnable {
 
 	private static final long DEFAULT_TIMEOUT_SLEEP = 200;
 	private static final long DEFAULT_TIMEOUT_AFTER_ERROR = 5000;
+
+	private static final String CHARSET = "UTF-8";
 
 	public ConfigurationCrawler(String outputFilename) {
 		this.outputFilename = outputFilename;
@@ -62,13 +63,11 @@ public class ConfigurationCrawler implements Runnable {
 	}
 
 	private void writeToFile(SumcConfiguration result) throws IOException {
-		final FileWriter outFile = new FileWriter(outputFilename);
-		final PrintWriter out = new PrintWriter(outFile);
+		final PrintWriter out = new PrintWriter(outputFilename, CHARSET);
 		out.println(HEADER_XML);
 		//allow result to be null
 		out.println(String.valueOf(result));
 		out.close();
-		outFile.close();
 	}
 
 	private SumcConfiguration getConfiguration(ConfigurationProvider provider) {
