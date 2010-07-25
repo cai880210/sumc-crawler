@@ -6,6 +6,8 @@ public class BusStop {
 	private static final String FORMAT_BUS_STOP_BGMAPS = "\n\t\t\t\t<busStop code=\"%s\" label=\"%s\" bgmapsLink=\"http://bgmaps.com/chooseobject.aspx?tplname=skgt&amp;key=%s\" />";
 	private static final String FORMAT_BUS_STOP_COORDINATES = "\n\t\t\t\t<busStop code=\"%s\" label=\"%s\" lat=\"%s\" lon=\"%s\" />";
 	
+	private static final int PRIME = 31;
+
 	private static final char DECIMAL_POINT = '.';
 
 	private String code;
@@ -45,6 +47,20 @@ public class BusStop {
 		symbols.setDecimalSeparator(DECIMAL_POINT);
 		java.text.DecimalFormat df = new java.text.DecimalFormat("#.######", symbols);
 		return df.format(d);
+	}
+	
+	@Override
+	public int hashCode() {
+		return code.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof BusStop) {
+			final BusStop otherBusStop = (BusStop) obj;
+			return otherBusStop.equals(this);
+		}
+		return false;
 	}
 
 }
