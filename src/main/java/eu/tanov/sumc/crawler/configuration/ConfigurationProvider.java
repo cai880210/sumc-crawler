@@ -1,4 +1,4 @@
-package eu.tanov.sumc.crawler;
+package eu.tanov.sumc.crawler.configuration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +16,8 @@ import eu.tanov.sumc.crawler.util.WaitHelper;
 import eu.tanov.sumc.crawler.util.WaitHelper.Condition;
 import eu.tanov.sumc.crawler.util.WebElementHelper;
 
-public class Provider {
-	private static final Logger log = Logger.getLogger(Provider.class.getName());
+public class ConfigurationProvider {
+	private static final Logger log = Logger.getLogger(ConfigurationProvider.class.getName());
 	
 	private static final String NAME_COMBO_VEHICLE_TYPES = "ctl00$ContentPlaceHolder1$ddlTransportType";
 	private static final String NAME_COMBO_LINES = "ctl00$ContentPlaceHolder1$ddlLines";

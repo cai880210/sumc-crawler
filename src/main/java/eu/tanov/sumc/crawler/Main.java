@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import eu.tanov.sumc.crawler.configuration.ConfigurationProvider;
 import eu.tanov.sumc.crawler.model.Line;
 import eu.tanov.sumc.crawler.model.SumcConfiguration;
 import eu.tanov.sumc.crawler.model.VehicleType;
@@ -19,7 +20,7 @@ public class Main {
 	}
 
 	public static void main(String[] args) {
-		final Provider provider = new Provider();
+		final ConfigurationProvider provider = new ConfigurationProvider();
 		provider.connect();
 
 		final SumcConfiguration result = getConfiguration(provider);
@@ -28,7 +29,7 @@ public class Main {
 		
 	}
 
-	private static SumcConfiguration getConfiguration(Provider provider) {
+	private static SumcConfiguration getConfiguration(ConfigurationProvider provider) {
 		final SumcConfiguration result = new SumcConfiguration();
 
 		final List<String> vehicleTypes = provider.getVehicleTypes();
@@ -39,7 +40,7 @@ public class Main {
 		return result;
 	}
 
-	private static VehicleType getVehicleType(Provider provider, String vehicleTypeName) {
+	private static VehicleType getVehicleType(ConfigurationProvider provider, String vehicleTypeName) {
 		final VehicleType result = new VehicleType();
 		result.setName(vehicleTypeName);
 		final List<String> lines = provider.getLines(vehicleTypeName);
@@ -71,7 +72,7 @@ public class Main {
 		return result;
 	}
 
-	private static Line getLine(Provider provider, String vehicleTypeName, String lineName) {
+	private static Line getLine(ConfigurationProvider provider, String vehicleTypeName, String lineName) {
 		final Line result = new Line();
 		result.setName(lineName);
 		result.getBusStopsDirection1().addAll(provider.getBusStops(vehicleTypeName, lineName, true));
