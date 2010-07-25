@@ -19,7 +19,7 @@ public class ConfigurationCrawler implements Runnable {
 	private final ConfigurationProvider provider;
 
 	private static final long DEFAULT_TIMEOUT_SLEEP = 200;
-//	private static final long DEFAULT_TIMEOUT_AFTER_ERROR = 10000;
+	private static final long DEFAULT_TIMEOUT_AFTER_ERROR = 5000;
 
 	public ConfigurationCrawler(String outputFilename) {
 		this.outputFilename = outputFilename;
@@ -85,22 +85,22 @@ public class ConfigurationCrawler implements Runnable {
 		result.setLabel(vehicleTypeLabel);
 		final List<String> lines = provider.getLines(vehicleTypeLabel);
 		for (final String lineLabel : lines) {
-//			boolean success = false;
-//			while(!success) {
-//				try {
+			boolean success = false;
+			while(!success) {
+				try {
 					result.getLines().add(getLine(provider, vehicleTypeLabel, lineLabel));
-//					success = true;
-//				} catch (Throwable e) {
-//					log.info("error, retring", e);
-//					//try again
-//					try {
-//						Thread.sleep(DEFAULT_TIMEOUT_AFTER_ERROR);
-//					} catch (InterruptedException e1) {
-//						log.warn("while sleeping", e);
-//					}
-//				}
-//				
-//			}
+					success = true;
+				} catch (Exception e) {
+					log.info("error, retring", e);
+					//try again
+					try {
+						Thread.sleep(DEFAULT_TIMEOUT_AFTER_ERROR);
+					} catch (InterruptedException e1) {
+						log.warn("while sleeping", e);
+					}
+				}
+				
+			}
 			//keep server load
 			try {
 				Thread.sleep(DEFAULT_TIMEOUT_SLEEP);
