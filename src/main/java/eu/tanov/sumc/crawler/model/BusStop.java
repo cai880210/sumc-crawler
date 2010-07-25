@@ -40,6 +40,22 @@ public class BusStop {
 		this.label = label;
 	}
 	
+	public Double getLat() {
+		return lat;
+	}
+	
+	public void setLat(Double lat) {
+		this.lat = lat;
+	}
+	
+	public Double getLon() {
+		return lon;
+	}
+	
+	public void setLon(Double lon) {
+		this.lon = lon;
+	}
+	
 	private static String doubleToString(double d) {
 		final DecimalFormatSymbols symbols = new DecimalFormatSymbols();
 		symbols.setDecimalSeparator(DECIMAL_POINT);
