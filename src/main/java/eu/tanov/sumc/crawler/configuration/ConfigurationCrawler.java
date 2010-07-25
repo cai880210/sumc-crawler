@@ -71,22 +71,22 @@ public class ConfigurationCrawler implements Runnable {
 		final SumcConfiguration result = new SumcConfiguration();
 
 		final List<String> vehicleTypes = provider.getVehicleTypes();
-		for (final String vehicleTypeName : vehicleTypes) {
-			result.getVehicleTypes().add(getVehicleType(provider, vehicleTypeName));
+		for (final String vehicleTypeLabel : vehicleTypes) {
+			result.getVehicleTypes().add(getVehicleType(provider, vehicleTypeLabel));
 		}
 
 		return result;
 	}
 
-	private VehicleType getVehicleType(ConfigurationProvider provider, String vehicleTypeName) {
+	private VehicleType getVehicleType(ConfigurationProvider provider, String vehicleTypeLabel) {
 		final VehicleType result = new VehicleType();
-		result.setName(vehicleTypeName);
-		final List<String> lines = provider.getLines(vehicleTypeName);
-		for (final String lineName : lines) {
+		result.setLabel(vehicleTypeLabel);
+		final List<String> lines = provider.getLines(vehicleTypeLabel);
+		for (final String lineLabel : lines) {
 //			boolean success = false;
 //			while(!success) {
 //				try {
-					result.getLines().add(getLine(provider, vehicleTypeName, lineName));
+					result.getLines().add(getLine(provider, vehicleTypeLabel, lineLabel));
 //					success = true;
 //				} catch (Throwable e) {
 //					log.info("error, retring", e);
@@ -110,11 +110,11 @@ public class ConfigurationCrawler implements Runnable {
 		return result;
 	}
 
-	private Line getLine(ConfigurationProvider provider, String vehicleTypeName, String lineName) {
+	private Line getLine(ConfigurationProvider provider, String vehicleTypeLabel, String lineLabel) {
 		final Line result = new Line();
-		result.setName(lineName);
-		result.getBusStopsDirection1().addAll(provider.getBusStops(vehicleTypeName, lineName, true));
-		result.getBusStopsDirection2().addAll(provider.getBusStops(vehicleTypeName, lineName, false));
+		result.setLabel(lineLabel);
+		result.getBusStopsDirection1().addAll(provider.getBusStops(vehicleTypeLabel, lineLabel, true));
+		result.getBusStopsDirection2().addAll(provider.getBusStops(vehicleTypeLabel, lineLabel, false));
 		
 		return result;
 	}

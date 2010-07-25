@@ -9,11 +9,11 @@ public class Line {
 	private final List<BusStop> busStopsDirection1 = new LinkedList<BusStop>();
 	private final List<BusStop> busStopsDirection2 = new LinkedList<BusStop>();
 	
-	private String name;
+	private String label;
 	
 	@Override
 	public String toString() {
-		return "\n\t\t<line name=\""+name+"\">"+
+		return "\n\t\t<line label=\""+label+"\">"+
 			"\n\t\t\t<direction1>"+CollectionsHelper.toStringNoSpaces(busStopsDirection1)+
 			"\n\t\t\t</direction1>"+
 			"\n\t\t\t<direction2>"+CollectionsHelper.toStringNoSpaces(busStopsDirection2)+
@@ -21,12 +21,12 @@ public class Line {
 		"\n\t\t</line>";
 	}
 
-	public String getName() {
-		return name;
+	public String getLabel() {
+		return label;
 	}
-
-	public void setName(String name) {
-		this.name = name;
+	
+	public void setLabel(String label) {
+		this.label = label;
 	}
 
 	public List<BusStop> getBusStopsDirection1() {

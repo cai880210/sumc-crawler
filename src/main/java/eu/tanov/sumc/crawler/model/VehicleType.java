@@ -7,23 +7,23 @@ import eu.tanov.sumc.crawler.util.CollectionsHelper;
 
 public class VehicleType {
 	private final List<Line> lines = new LinkedList<Line>();
-	private String name;
+	private String label;
 	
 	
 	@Override
 	public String toString() {
-		return "\n\t<vehicleType name=\""+name+"\">"+CollectionsHelper.toStringNoSpaces(lines)+
+		return "\n\t<vehicleType label=\""+label+"\">"+CollectionsHelper.toStringNoSpaces(lines)+
 				"\n\t</vehicleType>";
 	}
 
 
-	public String getName() {
-		return name;
+	public String getLabel() {
+		return label;
 	}
 
 
-	public void setName(String name) {
-		this.name = name;
+	public void setLabel(String label) {
+		this.label = label;
 	}
 
 

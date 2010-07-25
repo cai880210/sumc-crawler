@@ -157,28 +157,28 @@ public class ConfigurationProvider {
 		setDirection(vehicleType, line, firstDirection);
 		log.debug("vehicleType: " +vehicleType + ", line: " + line + ", firstDirection: "+firstDirection);
 
-		return parseBusStopsNames(getList(NAME_COMBO_BUS_STOPS, true));
+		return parseBusStopsLabels(getList(NAME_COMBO_BUS_STOPS, true));
 	}
 	
-	private List<BusStop> parseBusStopsNames(List<String> list) {
+	private List<BusStop> parseBusStopsLabels(List<String> list) {
 		final List<BusStop> result = new ArrayList<BusStop>(list.size());
-		for (String busStopName : list) {
-			result.add(createBusStopName(busStopName));
+		for (String busStopLabel : list) {
+			result.add(createBusStop(busStopLabel));
 		}
 		return result;
 	}
 
-	private BusStop createBusStopName(String busStopName) {
+	private BusStop createBusStop(String busStopLabel) {
 		final BusStop result = new BusStop();
-		final int busStopPrefixIndex = busStopName.indexOf(BUS_STOP_CODE_PREFIX);
-		final int busStopSuffixIndex = busStopName.indexOf(BUS_STOP_CODE_SUFFIX);
+		final int busStopPrefixIndex = busStopLabel.indexOf(BUS_STOP_CODE_PREFIX);
+		final int busStopSuffixIndex = busStopLabel.indexOf(BUS_STOP_CODE_SUFFIX);
 		
 		if (busStopPrefixIndex != 0 || busStopSuffixIndex == -1) {
-			throw new IllegalArgumentException("can't parse name: "+busStopName);
+			throw new IllegalArgumentException("can't parse name: "+busStopLabel);
 		}
-		String[] split = busStopName.split(BUS_STOP_CODE_SUFFIX_REGEX, 2);
-		result.setLabel(split[1].trim());
+		final String[] split = busStopLabel.split(BUS_STOP_CODE_SUFFIX_REGEX, 2);
 
+		result.setLabel(split[1].trim());
 		result.setCode(split[0].substring(1));
 
 		return result;
