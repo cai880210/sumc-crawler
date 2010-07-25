@@ -1,85 +1,75 @@
 package eu.tanov.sumc.crawler;
 
-import java.util.List;
-
-import org.apache.log4j.Logger;
-
-import eu.tanov.sumc.crawler.configuration.ConfigurationProvider;
-import eu.tanov.sumc.crawler.model.Line;
-import eu.tanov.sumc.crawler.model.SumcConfiguration;
-import eu.tanov.sumc.crawler.model.VehicleType;
+import eu.tanov.sumc.crawler.configuration.ConfigurationCrawler;
 
 
 public class Main {
-	private static final Logger log = Logger.getLogger(Main.class.getName());
-
-	private static final long DEFAULT_TIMEOUT_SLEEP = 200;
-//	private static final long DEFAULT_TIMEOUT_AFTER_ERROR = 10000;
+	private static final String ARGUMENT_ACTION_CONFIGURATION = "configuration";
+	//TODO: coordinates:
+//	private static final String ARGUMENT_ACTION_COORDINATES = "coordinates";
+	private static final String ARGUMENT_PARAMETER_CONFIGURATION_OUTPUT_FILE = "-output";
 
 	public Main() {
 	}
 
 	public static void main(String[] args) {
-		final ConfigurationProvider provider = new ConfigurationProvider();
-		provider.connect();
-
-		final SumcConfiguration result = getConfiguration(provider);
-		
-		System.out.println(result.toString());
-		
-	}
-
-	private static SumcConfiguration getConfiguration(ConfigurationProvider provider) {
-		final SumcConfiguration result = new SumcConfiguration();
-
-		final List<String> vehicleTypes = provider.getVehicleTypes();
-		for (final String vehicleTypeName : vehicleTypes) {
-			result.getVehicleTypes().add(getVehicleType(provider, vehicleTypeName));
+		if (args.length < 2) {
+			//no arguments
+			showHelp();
+			return;
 		}
-
-		return result;
+		final Runnable action;
+		if (ARGUMENT_ACTION_CONFIGURATION.equals(args[0])) {
+			if (args.length != 3) {
+				showHelp();
+				return;
+			}
+			
+			final String outputFilename =
+				getArgument(args, ARGUMENT_PARAMETER_CONFIGURATION_OUTPUT_FILE);
+			
+			if (outputFilename == null) {
+				showHelp();
+				return;
+			}
+			action = new ConfigurationCrawler(outputFilename);
+//TODO coordinates:			
+//		} else if (ARGUMENT_ACTION_COORDINATES.equals(args[0])) {
+//			
+		} else {
+			//unknown action
+			showHelp();
+			return;
+		}
+		action.run();
 	}
 
-	private static VehicleType getVehicleType(ConfigurationProvider provider, String vehicleTypeName) {
-		final VehicleType result = new VehicleType();
-		result.setName(vehicleTypeName);
-		final List<String> lines = provider.getLines(vehicleTypeName);
-		for (final String lineName : lines) {
-//			boolean success = false;
-//			while(!success) {
-//				try {
-					result.getLines().add(getLine(provider, vehicleTypeName, lineName));
-//					success = true;
-//				} catch (Throwable e) {
-//					log.info("error, retring", e);
-//					//try again
-//					try {
-//						Thread.sleep(DEFAULT_TIMEOUT_AFTER_ERROR);
-//					} catch (InterruptedException e1) {
-//						log.warn("while sleeping", e);
-//					}
-//				}
-//				
-//			}
-			//keep server load
-			try {
-				Thread.sleep(DEFAULT_TIMEOUT_SLEEP);
-			} catch (InterruptedException e) {
-				log.warn("while sleeping", e);
+	/**
+	 * @return null if not found
+	 */
+	private static String getArgument(String [] args, String argumentName) {
+		boolean found = false; 
+		for (String argument : args) {
+			if (found) {
+				return argument;
+			}
+			if (argumentName.equals(argument)) {
+				found = true;
 			}
 		}
-
-		return result;
-	}
-
-	private static Line getLine(ConfigurationProvider provider, String vehicleTypeName, String lineName) {
-		final Line result = new Line();
-		result.setName(lineName);
-		result.getBusStopsDirection1().addAll(provider.getBusStops(vehicleTypeName, lineName, true));
-		result.getBusStopsDirection2().addAll(provider.getBusStops(vehicleTypeName, lineName, false));
 		
-		return result;
+		return null;
 	}
+
+	private static void showHelp() {
+		System.out.println("Usage:");
+		System.out.println("To get configuration use arguments: "+
+				ARGUMENT_ACTION_CONFIGURATION+" "+
+				ARGUMENT_PARAMETER_CONFIGURATION_OUTPUT_FILE + " <filename>");
+		//TODO coordinates:
+//		System.out.println("To get coordinates run "+Arrays.toString(args)+" -output filename");
+	}
+	
 
 
 }
