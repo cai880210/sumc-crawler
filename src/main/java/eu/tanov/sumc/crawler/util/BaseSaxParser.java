@@ -12,7 +12,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 public abstract class BaseSaxParser<T extends Object> extends DefaultHandler {
-	private static final String ENCODING = "UTF8";
+	private static final String ENCODING = "UTF-8";
 
 	private final String filename;
 	
@@ -29,8 +29,6 @@ public abstract class BaseSaxParser<T extends Object> extends DefaultHandler {
 	protected abstract void initResult();
 
 	public T parse() throws SAXException, IOException {
-		initParser();
-
 		final XMLReader xr = XMLReaderFactory.createXMLReader();
 
 		xr.setContentHandler(this);
@@ -48,8 +46,4 @@ public abstract class BaseSaxParser<T extends Object> extends DefaultHandler {
 
 	@Override
 	public abstract void startElement(String uri, String name, String qName, Attributes atts);
-
-	private void initParser() {
-		System.setProperty("org.xml.sax.driver","org.xmlpull.v1.sax2.Driver");
-	}
 }
