@@ -6,8 +6,6 @@ public class BusStop {
 	private static final String FORMAT_BUS_STOP_BGMAPS = "\n\t\t\t\t<busStop code=\"%s\" label=\"%s\" bgmapsLink=\"http://bgmaps.com/chooseobject.aspx?tplname=skgt&amp;key=%s\" />";
 	private static final String FORMAT_BUS_STOP_COORDINATES = "\n\t\t\t\t<busStop code=\"%s\" label=\"%s\" lat=\"%s\" lon=\"%s\" />";
 	
-	private static final int PRIME = 31;
-
 	private static final char DECIMAL_POINT = '.';
 
 	private String code;
