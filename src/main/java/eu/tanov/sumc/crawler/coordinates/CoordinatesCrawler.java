@@ -1,10 +1,11 @@
 package eu.tanov.sumc.crawler.coordinates;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -19,9 +20,18 @@ import eu.tanov.sumc.crawler.model.BusStop;
 import eu.tanov.sumc.crawler.model.Line;
 import eu.tanov.sumc.crawler.model.SumcConfiguration;
 import eu.tanov.sumc.crawler.model.VehicleType;
+import eu.tanov.sumc.crawler.util.CollectionsHelper;
 
 public class CoordinatesCrawler implements Runnable {
 	private static final Logger log = Logger.getLogger(CoordinatesCrawler.class.getName());
+
+	private static final String CHARSET = "UTF-8";
+
+	private static final String HEADER_XML = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>";
+	private static final String COORDINATES_ROOT_BEGIN = "<busStops>";
+	private static final String COORDINATES_ROOT_END = "</busStops>";
+
+	private static final String FORMAT_XML_DATE = "\n\t<!-- %s -->\n\t<date>%s</date>\n";
 
 	private final String outputFilename;
 	private final String configurationFilename;
@@ -38,11 +48,6 @@ public class CoordinatesCrawler implements Runnable {
 	}
 
 	public void run() {
-		//TODO iterate list
-		
-		//TODO get list with new
-		//TODO get list with removed
-		
 		if (!checkFiles()) {
 			return;
 		}
@@ -58,18 +63,52 @@ public class CoordinatesCrawler implements Runnable {
 			return;
 		}
 		
-		final List<BusStop> usedBusStops = getUsedBusStops(configuration, codeToBusStop);
-		
-		//TODO save:
-//		private static final String OUTPUT_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>";
-//
-//		private static final String OUTPUT_ROOT_BEGIN = "<stations>";
-//		private static final String OUTPUT_ROOT_END = "</stations>";
+		final Set<BusStop> usedBusStops = getUsedBusStops(configuration, codeToBusStop);
+		//TODO use CoordinatesProvider to add new coordinates
+		writeResult(configuration, usedBusStops);
 
-		
+		writeLog(configuration, codeToBusStop.values(), usedBusStops);
 	}
 
-	private List<BusStop> getUsedBusStops(SumcConfiguration configuration, Map<String, BusStop> codeToBusStop) {
+	private void writeLog(SumcConfiguration configuration, Collection<BusStop> oldBusStops, Set<BusStop> newBusStops) {
+		
+		final Collection<BusStop> added = new ArrayList<BusStop>(newBusStops);
+		added.removeAll(oldBusStops);
+
+		final Collection<BusStop> removed = new ArrayList<BusStop>(oldBusStops);
+		removed.removeAll(newBusStops);
+		
+		final String result = "\n\nFrom "+new SimpleDateFormat().format(configuration.getDateCreated()) +
+			"\nAdded: "+CollectionsHelper.toStringNoSpaces(added)+
+			"\nRemoved: "+CollectionsHelper.toStringNoSpaces(removed);
+		try {
+			writeToFile(logFilename, result, true);
+		} catch (IOException e) {
+			log.error("could not write log to "+logFilename+", result: "+result, e);
+			return;
+		}
+	}
+
+	private void writeResult(SumcConfiguration configuration, Set<BusStop> usedBusStops) {
+		final String result = HEADER_XML+"\n"+
+			COORDINATES_ROOT_BEGIN +
+				xmlDate(configuration)+
+				CollectionsHelper.toStringNoSpaces(usedBusStops)+"\n"+
+			COORDINATES_ROOT_END;
+		try {
+			writeToFile(outputFilename, result, false);
+		} catch (IOException e) {
+			log.error("could not write to "+outputFilename+", result: "+result, e);
+			return;
+		}
+	}
+
+	private String xmlDate(SumcConfiguration configuration) {
+		final String timeAsString = new SimpleDateFormat().format(configuration.getDateCreated());
+		return String.format(FORMAT_XML_DATE, timeAsString, configuration.getDateCreated().getTime());
+	}
+
+	private Set<BusStop> getUsedBusStops(SumcConfiguration configuration, Map<String, BusStop> codeToBusStop) {
 		final Set<BusStop> result = new TreeSet<BusStop>(new Comparator<BusStop>() {
 			public int compare(BusStop arg0, BusStop arg1) {
 				//XXX convert to integer:
@@ -95,7 +134,7 @@ public class CoordinatesCrawler implements Runnable {
 				}
 			}
 		}
-		return new ArrayList<BusStop>(result);
+		return result;
 	}
 
 	/**
@@ -123,7 +162,8 @@ public class CoordinatesCrawler implements Runnable {
 	 * save time if file could not be opened - do not crawl whole site
 	 */
 	private boolean checkFiles() {
-		return checkFile(outputFilename) && checkFile(logFilename);
+		return checkFile(outputFilename);
+		//do not check log && checkFile(logFilename);
 	}
 
 	/**
@@ -131,7 +171,7 @@ public class CoordinatesCrawler implements Runnable {
 	 */
 	private boolean checkFile(String filename) {
 		try {
-			writeToFile(filename, "check write permissions");
+			writeToFile(filename, "check write permissions", true);
 			return true;
 		} catch (IOException e) {
 			log.error("could not write to "+filename, e);
@@ -139,11 +179,9 @@ public class CoordinatesCrawler implements Runnable {
 		}
 	}
 
-	private void writeToFile(String filename, String content) throws IOException {
-		final FileWriter outFile = new FileWriter(filename);
-		final PrintWriter out = new PrintWriter(outFile);
+	private void writeToFile(String filename, String content, boolean append) throws IOException {
+		final PrintWriter out = new PrintWriter(filename, CHARSET);
 		out.println(content);
 		out.close();
-		outFile.close();
 	}
 }
