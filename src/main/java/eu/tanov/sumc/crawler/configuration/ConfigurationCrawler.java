@@ -73,7 +73,23 @@ public class ConfigurationCrawler implements Runnable {
 
 		final List<String> vehicleTypes = provider.getVehicleTypes();
 		for (final String vehicleTypeLabel : vehicleTypes) {
-			result.getVehicleTypes().add(getVehicleType(provider, vehicleTypeLabel));
+
+			boolean success = false;
+			while(!success) {
+				try {
+					result.getVehicleTypes().add(getVehicleType(provider, vehicleTypeLabel));
+					success = true;
+				} catch (Exception e) {
+					log.info("error, retring", e);
+					//try again
+					try {
+						Thread.sleep(DEFAULT_TIMEOUT_AFTER_ERROR);
+					} catch (InterruptedException e1) {
+						log.warn("while sleeping", e);
+					}
+				}
+			}			
+			
 		}
 
 		result.setDateCreated(new Date());
