@@ -14,6 +14,7 @@ import eu.tanov.sumc.crawler.model.VehicleType;
 public class ConfigurationCrawler implements Runnable {
 	private static final Logger log = Logger.getLogger(ConfigurationCrawler.class.getName());
 
+	private static final String CHARSET = "UTF-8";
 	private static final String HEADER_XML = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>";
 
 	private final String outputFilename;
@@ -22,7 +23,6 @@ public class ConfigurationCrawler implements Runnable {
 	private static final long DEFAULT_TIMEOUT_SLEEP = 200;
 	private static final long DEFAULT_TIMEOUT_AFTER_ERROR = 5000;
 
-	private static final String CHARSET = "UTF-8";
 
 	public ConfigurationCrawler(String outputFilename) {
 		this.outputFilename = outputFilename;
