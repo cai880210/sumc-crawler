@@ -82,11 +82,11 @@ public class ConfigurationParser extends BaseSaxParser<SumcConfiguration> {
 	}
 
 	private void handleDirection1(Attributes atts) {
-		currentDirection = currentLine.getBusStopsDirection1();
+		currentDirection = currentLine.getDirection1();
 	}
 
 	private void handleDirection2(Attributes atts) {
-		currentDirection = currentLine.getBusStopsDirection2();
+		currentDirection = currentLine.getDirection2();
 	}
 
 	private void handleBusStop(Attributes atts) {

@@ -113,8 +113,8 @@ public class ConfigurationCrawler implements Runnable {
 	private Line getLine(ConfigurationProvider provider, String vehicleTypeLabel, String lineLabel) {
 		final Line result = new Line();
 		result.setLabel(lineLabel);
-		result.getBusStopsDirection1().addAll(provider.getBusStops(vehicleTypeLabel, lineLabel, true));
-		result.getBusStopsDirection2().addAll(provider.getBusStops(vehicleTypeLabel, lineLabel, false));
+		result.getDirection1().addAll(provider.getBusStops(vehicleTypeLabel, lineLabel, true));
+		result.getDirection2().addAll(provider.getBusStops(vehicleTypeLabel, lineLabel, false));
 		
 		return result;
 	}
