@@ -82,7 +82,7 @@ public class CoordinatesCrawler implements Runnable {
 			"\nAdded: "+CollectionsHelper.toStringNoSpaces(added)+
 			"\nRemoved: "+CollectionsHelper.toStringNoSpaces(removed);
 		try {
-			writeToFile(logFilename, result, true);
+			writeToFile(logFilename, result);
 		} catch (IOException e) {
 			log.error("could not write log to "+logFilename+", result: "+result, e);
 			return;
@@ -96,7 +96,7 @@ public class CoordinatesCrawler implements Runnable {
 				CollectionsHelper.toStringNoSpaces(usedBusStops)+"\n"+
 			COORDINATES_ROOT_END;
 		try {
-			writeToFile(outputFilename, result, false);
+			writeToFile(outputFilename, result);
 		} catch (IOException e) {
 			log.error("could not write to "+outputFilename+", result: "+result, e);
 			return;
@@ -170,7 +170,7 @@ public class CoordinatesCrawler implements Runnable {
 	 */
 	private boolean checkFile(String filename) {
 		try {
-			writeToFile(filename, "check write permissions", true);
+			writeToFile(filename, "check write permissions");
 			return true;
 		} catch (IOException e) {
 			log.error("could not write to "+filename, e);
@@ -178,7 +178,7 @@ public class CoordinatesCrawler implements Runnable {
 		}
 	}
 
-	private void writeToFile(String filename, String content, boolean append) throws IOException {
+	private void writeToFile(String filename, String content) throws IOException {
 		final PrintWriter out = new PrintWriter(filename, CHARSET);
 		out.println(content);
 		out.close();
