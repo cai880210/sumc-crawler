@@ -64,12 +64,12 @@ public class CoordinatesCrawler implements Runnable {
 		}
 		
 		final Set<BusStop> usedBusStops = getUsedBusStops(configuration, codeToBusStop);
-		//TODO use CoordinatesProvider to add new coordinates
 		
 		final Collection<BusStop> addedBusStops = getAddedBusStops(codeToBusStop.values(), usedBusStops);
 		final Collection<BusStop> removedBusStops = getRemovedBusStops(codeToBusStop.values(), usedBusStops);
-		writeResult(configuration, usedBusStops);
+		//TODO use CoordinatesProvider to add new coordinates
 
+		writeResult(configuration, usedBusStops);
 		writeLog(configuration, addedBusStops, removedBusStops);
 	}
 
@@ -116,6 +116,9 @@ public class CoordinatesCrawler implements Runnable {
 		return String.format(FORMAT_XML_DATE, timeAsString, configuration.getDateCreated().getTime());
 	}
 
+	/**
+	 * @return sorted set
+	 */
 	private Set<BusStop> getUsedBusStops(SumcConfiguration configuration, Map<Integer, BusStop> codeToBusStop) {
 		final Set<BusStop> result = new TreeSet<BusStop>(new Comparator<BusStop>() {
 			public int compare(BusStop arg0, BusStop arg1) {
