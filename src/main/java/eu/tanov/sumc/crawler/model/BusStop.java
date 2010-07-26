@@ -2,10 +2,11 @@ package eu.tanov.sumc.crawler.model;
 
 import java.text.DecimalFormatSymbols;
 
+import eu.tanov.sumc.crawler.util.BgmapsHelper;
+
 public class BusStop {
 	private static final String FORMAT_BUS_STOP_BGMAPS = "\n\t\t\t\t<busStop code=\"%s\" label=\"%s\" bgmapsLink=\"%s\" />";
 	private static final String FORMAT_BUS_STOP_COORDINATES = "\n\t\t\t\t<busStop code=\"%s\" label=\"%s\" lat=\"%s\" lon=\"%s\" />";
-	private static final String LINK_BGMAPS_PREFIX = "http://bgmaps.com/chooseobject.aspx?tplname=skgt&key=";
 
 	private static final String XML_SPECIAL_CHAR = "&";
 	private static final String XML_SPECIAL_CHAR_REPLACEMENT = "&amp;";
@@ -21,7 +22,7 @@ public class BusStop {
 	@Override
 	public String toString() {
 		if (lat == null || lon == null) {
-			return String.format(FORMAT_BUS_STOP_BGMAPS, code, label, getBgmapsLink().replace(XML_SPECIAL_CHAR, XML_SPECIAL_CHAR_REPLACEMENT));
+			return String.format(FORMAT_BUS_STOP_BGMAPS, code, label, BgmapsHelper.getBgmapsLink(code).replace(XML_SPECIAL_CHAR, XML_SPECIAL_CHAR_REPLACEMENT));
 		} else {
 			return String.format(FORMAT_BUS_STOP_COORDINATES, code, label,
 					doubleToString(lat), doubleToString(lon));
@@ -61,36 +62,6 @@ public class BusStop {
 		this.lon = lon;
 	}
 	
-	/**
-	 * will be removed
-	 * @return
-	 */
-	public String getBgmapsLink() {
-		return LINK_BGMAPS_PREFIX + addLeadingZeros(code, 4);
-	}
-	
-	/**
-	 * @param code2
-	 * @param i
-	 * @return
-	 */
-	private static String addLeadingZeros(int number, int minLength) {
-		final String asString = String.valueOf(number);
-		if (asString.length() >= minLength) {
-			//nothing to add
-			return asString;
-		}
-		
-		final StringBuilder result = new StringBuilder(minLength);
-
-		final int zeroesToAdd = minLength - asString.length();
-		for (int i = 0; i < zeroesToAdd; i++) {
-			result.append("0");
-		}
-		result.append(asString);
-		return result.toString();
-	}
-
 	private static String doubleToString(double d) {
 		final DecimalFormatSymbols symbols = new DecimalFormatSymbols();
 		symbols.setDecimalSeparator(DECIMAL_POINT);

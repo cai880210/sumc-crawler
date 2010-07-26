@@ -1,10 +1,13 @@
 package eu.tanov.sumc.crawler.coordinates;
 
 import org.apache.log4j.Logger;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import eu.tanov.sumc.crawler.model.BusStop;
+import eu.tanov.sumc.crawler.util.BgmapsHelper;
+import eu.tanov.sumc.crawler.util.WebElementHelper;
 
 public class CoordinatesProvider {
 	private static final Logger log = Logger.getLogger(CoordinatesProvider.class.getName());
@@ -23,7 +26,7 @@ public class CoordinatesProvider {
 	}
 
 	private void prepareBgmaps(BusStop busStop) {
-		bgmaps.get(busStop.getBgmapsLink());
+		bgmaps.get(BgmapsHelper.getBgmapsLink(busStop.getCode()));
 		
 	}
 
