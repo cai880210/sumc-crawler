@@ -65,22 +65,30 @@ public class CoordinatesCrawler implements Runnable {
 		
 		final Set<BusStop> usedBusStops = getUsedBusStops(configuration, codeToBusStop);
 		//TODO use CoordinatesProvider to add new coordinates
+		
+		final Collection<BusStop> addedBusStops = getAddedBusStops(codeToBusStop.values(), usedBusStops);
+		final Collection<BusStop> removedBusStops = getRemovedBusStops(codeToBusStop.values(), usedBusStops);
 		writeResult(configuration, usedBusStops);
 
-		writeLog(configuration, codeToBusStop.values(), usedBusStops);
+		writeLog(configuration, addedBusStops, removedBusStops);
 	}
 
-	private void writeLog(SumcConfiguration configuration, Collection<BusStop> oldBusStops, Set<BusStop> newBusStops) {
-		
-		final Collection<BusStop> added = new ArrayList<BusStop>(newBusStops);
-		added.removeAll(oldBusStops);
-
-		final Collection<BusStop> removed = new ArrayList<BusStop>(oldBusStops);
-		removed.removeAll(newBusStops);
-		
+	private Collection<BusStop> getAddedBusStops(Collection<BusStop> oldBusStops, Collection<BusStop> newBusStops) {
+		final List<BusStop> result = new ArrayList<BusStop>(newBusStops);
+		result.removeAll(oldBusStops);
+		return result;
+	}
+	
+	private Collection<BusStop> getRemovedBusStops(Collection<BusStop> oldBusStops, Collection<BusStop> newBusStops) {
+		final List<BusStop> result = new ArrayList<BusStop>(oldBusStops);
+		result.removeAll(newBusStops);
+		return result;
+	}
+	
+	private void writeLog(SumcConfiguration configuration, Collection<BusStop> addedBusStops, Collection<BusStop> removedBusStops) {
 		final String result = "\n\nFrom "+new SimpleDateFormat().format(configuration.getDateCreated()) +
-			"\nAdded: "+CollectionsHelper.toStringNoSpaces(added)+
-			"\nRemoved: "+CollectionsHelper.toStringNoSpaces(removed);
+			"\nAdded: "+CollectionsHelper.toStringNoSpaces(addedBusStops)+
+			"\nRemoved: "+CollectionsHelper.toStringNoSpaces(removedBusStops);
 		try {
 			writeToFile(logFilename, result);
 		} catch (IOException e) {
