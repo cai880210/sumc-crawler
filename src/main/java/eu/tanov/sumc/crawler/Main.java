@@ -37,6 +37,8 @@ public class Main {
 		if (action != null) {
 			action.run();
 		}
+		
+		System.exit(0);
 	}
 
 	private static Runnable createConfigurationAction(String[] args) {
