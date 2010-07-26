@@ -23,6 +23,12 @@ public class CoordinatesProvider {
 	public void fetchCoordinates(BusStop busStop) {
 		prepareLocation(busStop);
 		prepareBgmaps(busStop);
+		
+		//TODO wait for element "FLAG_LOCATION_SELECTED" to be created
+		//TODO get content of elmement "latlon"
+		//TODO parse it (split by ,)
+		
+		//TODO set to busStop
 	}
 
 	private void prepareBgmaps(BusStop busStop) {
@@ -32,6 +38,36 @@ public class CoordinatesProvider {
 
 	private void prepareLocation(BusStop busStop) {
 		location.get(URL_LOCATION);
+		
+		addReadyButton(busStop);
+		addBgmapsImage(busStop);
+	}
+
+	private void addReadyButton(BusStop busStop) {
+		final JavascriptExecutor javascriptExecutor = WebElementHelper.toJavascriptExecutor(location);
+		javascriptExecutor.executeScript("var button = document.createElement('input');" +
+				"button.type='button';" +
+				"button.value = 'This is bus station \"'+arguments[0]+'\"';" +
+				"button.setAttribute('onClick'," +
+					"'var flag = document.createElement(\"div\");" +
+					"flag.id=\"FLAG_LOCATION_SELECTED\";" +
+					"document.getElementById(\"latlon\").parentElement.appendChild(flag);" +
+					"');" +
+				"document.getElementById('latlon').parentElement.appendChild(button);"
+					,
+				busStop.getLabel()
+		);
+	}
+
+	private void addBgmapsImage(BusStop busStop) {
+		
+		final JavascriptExecutor javascriptExecutor = WebElementHelper.toJavascriptExecutor(location);
+
+		javascriptExecutor.executeScript("var img = document.createElement('img');" +
+				"img.src = arguments[0];" +
+				"document.getElementById('latlon').parentElement.appendChild(img);",
+				BgmapsHelper.getBgmapsImage(busStop.getCode())
+		);
 		
 	}
 
