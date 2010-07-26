@@ -68,8 +68,7 @@ public class CoordinatesCrawler implements Runnable {
 		final Collection<BusStop> addedBusStops = getAddedBusStops(codeToBusStop.values(), usedBusStops);
 		final Collection<BusStop> removedBusStops = getRemovedBusStops(codeToBusStop.values(), usedBusStops);
 
-//		TODO uncomment:
-//		fetchNewCoordinates(usedBusStops, addedBusStops);
+		fetchNewCoordinates(usedBusStops, addedBusStops);
 
 		writeResult(configuration, usedBusStops);
 		writeLog(configuration, addedBusStops, removedBusStops);
