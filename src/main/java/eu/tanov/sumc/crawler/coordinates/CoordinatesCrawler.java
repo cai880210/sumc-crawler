@@ -111,7 +111,7 @@ public class CoordinatesCrawler implements Runnable {
 	private Set<BusStop> getUsedBusStops(SumcConfiguration configuration, Map<Integer, BusStop> codeToBusStop) {
 		final Set<BusStop> result = new TreeSet<BusStop>(new Comparator<BusStop>() {
 			public int compare(BusStop arg0, BusStop arg1) {
-				return arg1.getCode() - arg0.getCode();
+				return arg0.getCode() - arg1.getCode();
 			}
 		});
 
