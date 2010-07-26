@@ -17,10 +17,10 @@ public class WaitHelper {
 
 	/**
 	 * @param condition
-	 * @param timeout max time to wait
+	 * @param timeout max time to wait, -1 - infinite wait
 	 * @return true if condition is reached, or false if condition.completed() always returns false
 	 */
-	public static boolean waitForCondition(Condition condition, int timeout) {
+	public static boolean waitForCondition(Condition condition, final int timeout) {
 		final long endDate = System.currentTimeMillis() + timeout;
 		long remaining;
 
@@ -36,7 +36,7 @@ public class WaitHelper {
 			} catch (InterruptedException e) {
 				log.info("in wait for " + condition, e);
 			}
-		} while (remaining > 0);
+		} while (timeout == -1 || remaining > 0);
 		
 		log.debug("condition not satisfied: "+condition);
 		return false;
