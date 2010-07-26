@@ -67,10 +67,25 @@ public class CoordinatesCrawler implements Runnable {
 		
 		final Collection<BusStop> addedBusStops = getAddedBusStops(codeToBusStop.values(), usedBusStops);
 		final Collection<BusStop> removedBusStops = getRemovedBusStops(codeToBusStop.values(), usedBusStops);
-		//TODO use CoordinatesProvider to add new coordinates
+
+//		TODO uncomment:
+//		fetchNewCoordinates(usedBusStops, addedBusStops);
 
 		writeResult(configuration, usedBusStops);
 		writeLog(configuration, addedBusStops, removedBusStops);
+	}
+
+	private void fetchNewCoordinates(Set<BusStop> usedBusStops, Collection<BusStop> addedBusStops) {
+		final CoordinatesProvider coordinatesProvider = new CoordinatesProvider();
+		
+		for (BusStop busStop : addedBusStops) {
+			//usedBusStops can be not used (because busStop.hashCode() and busStop.equals() only use .code, but for safety)  
+			if (!usedBusStops.remove(busStop)) {
+				throw new IllegalStateException("Removing unknown bus stop: "+busStop);
+			}
+			coordinatesProvider.fetchCoordinates(busStop);
+			usedBusStops.add(busStop);
+		}
 	}
 
 	private Collection<BusStop> getAddedBusStops(Collection<BusStop> oldBusStops, Collection<BusStop> newBusStops) {
