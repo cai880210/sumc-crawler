@@ -32,4 +32,9 @@ public class CoordinatesProvider {
 		
 	}
 
+	public void close() {
+		location.quit();
+		bgmaps.quit();
+	}
+
 }

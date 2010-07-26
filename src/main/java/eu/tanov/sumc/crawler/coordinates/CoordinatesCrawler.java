@@ -86,6 +86,8 @@ public class CoordinatesCrawler implements Runnable {
 			coordinatesProvider.fetchCoordinates(busStop);
 			usedBusStops.add(busStop);
 		}
+		
+		coordinatesProvider.close();
 	}
 
 	private Collection<BusStop> getAddedBusStops(Collection<BusStop> oldBusStops, Collection<BusStop> newBusStops) {
