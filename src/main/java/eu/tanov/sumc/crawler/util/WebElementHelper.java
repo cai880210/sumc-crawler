@@ -98,6 +98,14 @@ public class WebElementHelper {
 
 		return result.toString();
 	}
+	
+	public static void focus(WebElement element) {
+		toJavascriptExecutor(element).executeScript("arguments[0].focus()", element);
+	}
+	
+	public static void blur(WebElement element) {
+		toJavascriptExecutor(element).executeScript("arguments[0].blur()", element);
+	}
 
 	public static JavascriptExecutor toJavascriptExecutor(Object element) {
 		if (element instanceof JavascriptExecutor) {
@@ -107,9 +115,5 @@ public class WebElementHelper {
 		}
 		throw new IllegalArgumentException("could not convert to javascript executor: "+element);
 	}
-
-
-
-
 }
 
