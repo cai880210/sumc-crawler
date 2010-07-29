@@ -7,6 +7,7 @@ import eu.tanov.sumc.crawler.util.BgmapsHelper;
 public class BusStop {
 	private static final String FORMAT_BUS_STOP_BGMAPS = "\n\t\t\t\t<busStop code=\"%s\" label=\"%s\" bgmapsLink=\"%s\" />";
 	private static final String FORMAT_BUS_STOP_COORDINATES = "\n\t\t\t\t<busStop code=\"%s\" label=\"%s\" lat=\"%s\" lon=\"%s\" />";
+	private static final String FORMAT_XML_COMMENT = "\n<!--\n%s\n-->\n";
 
 	private static final String XML_SPECIAL_CHAR = "&";
 	private static final String XML_SPECIAL_CHAR_REPLACEMENT = "&amp;";
@@ -18,11 +19,19 @@ public class BusStop {
 	private String label;
 	private Double lat;
 	private Double lon;
+	private boolean unknown = false;
 	
 	@Override
 	public String toString() {
 		if (lat == null || lon == null) {
-			return String.format(FORMAT_BUS_STOP_BGMAPS, code, label, BgmapsHelper.getBgmapsLink(code).replace(XML_SPECIAL_CHAR, XML_SPECIAL_CHAR_REPLACEMENT));
+			final String result = String.format(FORMAT_BUS_STOP_BGMAPS, code, label, BgmapsHelper.getBgmapsLink(code).replace(XML_SPECIAL_CHAR, XML_SPECIAL_CHAR_REPLACEMENT));
+			
+			if (!unknown) {
+				return result;
+			} else {
+				//wrap in comment
+				return String.format(FORMAT_XML_COMMENT, result);
+			}
 		} else {
 			return String.format(FORMAT_BUS_STOP_COORDINATES, code, label,
 					doubleToString(lat), doubleToString(lon));
@@ -81,6 +90,10 @@ public class BusStop {
 			return otherBusStop.getCode()== this.getCode();
 		}
 		return false;
+	}
+
+	public void setUnknown() {
+		this.unknown  = true;
 	}
 
 }
