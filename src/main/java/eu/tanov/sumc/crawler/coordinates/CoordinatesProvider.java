@@ -20,6 +20,7 @@ public class CoordinatesProvider {
 	private static final String CITY_SEPARATOR = ", ";
 	private static final String NAME_SEARCH = "q";
 	private static final String ID_FLAG_LOCATION_SELECTED = "FLAG_LOCATION_SELECTED";
+	private static final String ID_FLAG_LOCATION_UNKNOWN = "FLAG_LOCATION_UNKNOWN";
 	private static final String ID_COORDINATES = "latlon";
 	
 
@@ -42,15 +43,20 @@ public class CoordinatesProvider {
 			
 			public boolean completed() {
 				final List<WebElement> matched = location.findElements(By.id(ID_FLAG_LOCATION_SELECTED));
-				
+				matched.addAll(location.findElements(By.id(ID_FLAG_LOCATION_UNKNOWN)));
 				return !matched.isEmpty();
 			}
 		}, -1);
 		
-		final WebElement coordinatesHolder = location.findElement(By.id(ID_COORDINATES));
-		final String coordinates = WebElementHelper.getText(coordinatesHolder);
-
-		setCoordinates(busStop, coordinates);
+		if (!location.findElements(By.id(ID_FLAG_LOCATION_SELECTED)).isEmpty()) {
+			//selected
+			final WebElement coordinatesHolder = location.findElement(By.id(ID_COORDINATES));
+			final String coordinates = WebElementHelper.getText(coordinatesHolder);
+			
+			setCoordinates(busStop, coordinates);
+		} else {
+			busStop.setUnknown();
+		}
 	}
 
 	private void setCoordinates(BusStop busStop, String coordinates) {
@@ -70,6 +76,7 @@ public class CoordinatesProvider {
 	private void prepareLocation(BusStop busStop) {
 		location.get(URL_LOCATION);
 		
+		addUnknownButton(busStop);
 		addReadyButton(busStop);
 		addBgmapsImage(busStop);
 		
@@ -91,8 +98,27 @@ public class CoordinatesProvider {
 					"flag.id=\""+ID_FLAG_LOCATION_SELECTED+"\";" +
 					"document.getElementById(\""+ID_COORDINATES+"\").parentElement.appendChild(flag);" +
 					"document.getElementById(\"BUTTON_LOCATION_SELECTED\").value=\"Please wait...\";" +
+					"document.getElementById(\"BUTTON_LOCATION_UNKNOWN\").value=\"Please wait...\";" +
 					"');" +
 				"document.getElementById('"+ID_COORDINATES+"').parentElement.appendChild(button);"
+					,
+				busStop.getLabel()
+		);
+	}
+	private void addUnknownButton(BusStop busStop) {
+		final JavascriptExecutor javascriptExecutor = WebElementHelper.toJavascriptExecutor(location);
+		javascriptExecutor.executeScript("var unknownButton = document.createElement('input');" +
+				"unknownButton.type='button';" +
+				"unknownButton.setAttribute('id', 'BUTTON_LOCATION_UNKNOWN');" +
+				"unknownButton.value = 'Location of bus stop \"'+arguments[0]+'\" is unknown!';" +
+				"unknownButton.setAttribute('onClick'," +
+					"'var flag = document.createElement(\"div\");" +
+					"flag.id=\""+ID_FLAG_LOCATION_UNKNOWN+"\";" +
+					"document.getElementById(\""+ID_COORDINATES+"\").parentElement.appendChild(flag);" +
+					"document.getElementById(\"BUTTON_LOCATION_SELECTED\").value=\"Please wait...\";" +
+					"document.getElementById(\"BUTTON_LOCATION_UNKNOWN\").value=\"Please wait...\";" +
+					"');" +
+				"document.getElementById('"+ID_COORDINATES+"').parentElement.appendChild(unknownButton);"
 					,
 				busStop.getLabel()
 		);
