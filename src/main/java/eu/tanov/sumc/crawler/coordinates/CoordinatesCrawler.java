@@ -77,11 +77,14 @@ public class CoordinatesCrawler implements Runnable {
 	private void fetchNewCoordinates(Set<BusStop> usedBusStops, Collection<BusStop> addedBusStops) {
 		final CoordinatesProvider coordinatesProvider = new CoordinatesProvider();
 		
+		int i = 0;
 		for (BusStop busStop : addedBusStops) {
+			i++;
 			//usedBusStops can be not used (because busStop.hashCode() and busStop.equals() only use .code, but for safety)  
 			if (!usedBusStops.remove(busStop)) {
 				throw new IllegalStateException("Removing unknown bus stop: "+busStop);
 			}
+			log.info(String.format("Bus stop %s of %s", i, addedBusStops.size()));
 			coordinatesProvider.fetchCoordinates(busStop);
 			usedBusStops.add(busStop);
 		}
