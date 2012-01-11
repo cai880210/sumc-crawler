@@ -2,9 +2,8 @@ package eu.tanov.sumc.crawler.util;
 
 
 public class BgmapsHelper {
-	private static final String LINK_BGMAPS_PREFIX = "http://bgmaps.com/chooseobject.aspx?tplname=skgt&key=";
-	private static final String IMAGE_BGMAPS_PREFIX = "http://bgmaps.com/tplimage.ashx?tplname=skgt&key=";
-	
+	private static final String LINK_BGMAPS_PREFIX = "http://www.bgmaps.com/old/chooseobject.aspx?tplname=skgt&key=";
+	private static final String IMAGE_BGMAPS_PREFIX = "http://www.bgmaps.com/old/tplimage.ashx?tplname=skgt&key=";
 
 	//helper, without instance
 	private BgmapsHelper() {}
