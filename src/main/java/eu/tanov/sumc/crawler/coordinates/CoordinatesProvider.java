@@ -5,7 +5,6 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -13,8 +12,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import eu.tanov.sumc.crawler.model.BusStop;
 import eu.tanov.sumc.crawler.util.BgmapsHelper;
 import eu.tanov.sumc.crawler.util.WaitHelper;
-import eu.tanov.sumc.crawler.util.WebElementHelper;
 import eu.tanov.sumc.crawler.util.WaitHelper.Condition;
+import eu.tanov.sumc.crawler.util.WebElementHelper;
 
 public class CoordinatesProvider {
 	private static final String CITY_SEPARATOR = ", ";
@@ -82,7 +81,7 @@ public class CoordinatesProvider {
 		
 		//focus on query
 		final WebElement search = location.findElement(By.name(NAME_SEARCH));
-		search.sendKeys(Keys.HOME + CITY_SEPARATOR + Keys.HOME);
+		search.sendKeys(CITY_SEPARATOR);
 		
 		WebElementHelper.focus(search);
 	}
