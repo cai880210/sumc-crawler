@@ -28,11 +28,11 @@ public class ConfigurationProvider {
 //	private static final String FORMAT_XPATH_BY_FOR = "//*[@for='%s']";
 //	private static final String FORMAT_XPATH_BY_ID = "//*[@id='%s']";
 
-	/**
-//	private static final String URL_MAIN = "http://pt.sumc.bg/Web/SelectByLine.aspx";
+	private static final String URL_MAIN = "http://pt.sumc.bg/Web/SelectByLine.aspx";
+	/**
 	 * or (forwards to same addres): 
-	 */
-	private static final String URL_MAIN = "http://gps.skgt-bg.com/";
+	 private static final String URL_MAIN = "http://gps.skgt-bg.com/";
+	 */
 	private static final int DEFAULT_TIMEOUT = 10000;
 	private static final char BUS_STOP_CODE_PREFIX = '(';
 	private static final char BUS_STOP_CODE_SUFFIX = ')';

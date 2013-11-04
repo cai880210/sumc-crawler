@@ -135,7 +135,12 @@ public class ConfigurationCrawler implements Runnable {
 		result.setLabel(lineLabel);
 		result.getDirection1().addAll(provider.getBusStops(vehicleTypeLabel, lineLabel, true));
 		result.getDirection2().addAll(provider.getBusStops(vehicleTypeLabel, lineLabel, false));
-		
+		//TODO keep server load
+			try {
+				Thread.sleep(400);
+			} catch (InterruptedException e) {
+				log.warn("while sleeping", e);
+			}
 		return result;
 	}
 

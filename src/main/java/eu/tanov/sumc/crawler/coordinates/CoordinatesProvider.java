@@ -14,7 +14,6 @@ import eu.tanov.sumc.crawler.util.BgmapsHelper;
 import eu.tanov.sumc.crawler.util.WaitHelper;
 import eu.tanov.sumc.crawler.util.WaitHelper.Condition;
 import eu.tanov.sumc.crawler.util.WebElementHelper;
-
 public class CoordinatesProvider {
 	private static final String CITY_SEPARATOR = ", ";
 	private static final String NAME_SEARCH = "q";
@@ -25,7 +24,7 @@ public class CoordinatesProvider {
 
 	private static final Logger log = Logger.getLogger(CoordinatesProvider.class.getName());
 
-	private static final String URL_LOCATION = "http://www.getlatlon.com/?Sofia";
+	private static final String URL_LOCATION = "http://dbsgeo.com/latlon/?Sofia";
 
 	private final WebDriver location = new ChromeDriver();
 	private final WebDriver bgmaps = new ChromeDriver();
